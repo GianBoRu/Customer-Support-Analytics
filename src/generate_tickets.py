@@ -11,6 +11,10 @@ OUTPUT_PATH = PROJECT_ROOT / "data" / "tickets.json"
 
 TOTAL_TICKETS = 350
 RANDOM_SEED = 42
+MISSING_FIRST_RESPONSE_COUNT = 10
+INVALID_RESOLUTION_DATE_COUNT = 8
+INCONSISTENT_PRIORITY_COUNT = 8
+INVALID_TIME_ORDER_COUNT = 8
 
 CHANNELS = ["email", "chat", "web_form"]
 
@@ -113,6 +117,29 @@ def generate_tickets(total: int, seed: int) -> list[dict]:
 
     return tickets
 
+def add_data_quality_issues(tickets: list[dict], seed: int) -> None:
+    """Add controlled data-quality issues to selected tickets."""
+    random_generator = random.Random(seed)
+    ticket_indices = list(range(len(tickets)))
+    random_generator.shuffle(ticket_indices)
+
+    missing_response_end = MISSING_FIRST_RESPONSE_COUNT
+    invalid_date_end = missing_response_end + INVALID_RESOLUTION_DATE_COUNT
+    inconsistent_priority_end = invalid_date_end + INCONSISTENT_PRIORITY_COUNT
+    invalid_time_order_end = inconsistent_priority_end + INVALID_TIME_ORDER_COUNT
+
+    for index in ticket_indices[:missing_response_end]:
+        tickets[index]["first_response_at"] = None
+
+    for index in ticket_indices[missing_response_end:invalid_date_end]:
+        tickets[index]["resolved_at"] = "not_available"
+
+    for index in ticket_indices[invalid_date_end:inconsistent_priority_end]:
+        tickets[index]["priority"] = "HIGH "
+
+    for index in ticket_indices[inconsistent_priority_end:invalid_time_order_end]:
+        created_at = datetime.fromisoformat(tickets[index]["created_at"])
+        tickets[index]["resolved_at"] = (created_at - timedelta(hours=2)).isoformat()
 
 def save_tickets(tickets: list[dict]) -> None:
     """Save safely: replace the official file only after writing succeeds."""
@@ -126,6 +153,11 @@ def save_tickets(tickets: list[dict]) -> None:
     print(f"{len(tickets)} tickets saved to: {OUTPUT_PATH}")
 
 
+"""if __name__ == "__main__":
+    tickets = generate_tickets(TOTAL_TICKETS, RANDOM_SEED)
+    save_tickets(tickets)""" #original code before adding the intentional mistakes to the DB
+
 if __name__ == "__main__":
     tickets = generate_tickets(TOTAL_TICKETS, RANDOM_SEED)
+    add_data_quality_issues(tickets, RANDOM_SEED)
     save_tickets(tickets)

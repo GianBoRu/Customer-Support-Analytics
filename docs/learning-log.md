@@ -16,6 +16,28 @@ The project is developed on a laptop and a desktop PC. GitHub is the shared sour
 
 ---
 
+## Timeline
+
+### 2026-09-02 — Project foundation
+- Created the GitHub repository and initial documentation.
+- Set up the project on the laptop.
+- Created the Python virtual environment and project requirements.
+
+### 2026-09-04 — Desktop PC setup
+- Cloned the repository on the desktop PC.
+- Created and activated its local `.venv`.
+- Configured dependencies with `requirements.txt`.
+- Documented the Git workflow between laptop, desktop PC and GitHub.
+
+### 2026-09-05 — Data, testing and API
+- Created the reproducible fictional ticket generator.
+- Generated 350 tickets with exactly 35 controlled data-quality issues.
+- Added and ran the first automated pytest test.
+- Created the FastAPI endpoint and verified a `200 OK` response.
+- Created the requests-based API client and retrieved 350 tickets.
+- Learned and used `git commit --amend` and `git pull --rebase`.
+- Added this learning log.
+
 ## Project setup
 
 ### Main tools
